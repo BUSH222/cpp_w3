@@ -2,7 +2,6 @@
 using namespace std;
 
 int main() {
-    cout << "waow" << endl;
-    cout << 12 << endl;
+    cout << "waow" << endl; cout << 12 << endl;
     cout << "cpp" << '\n';
 }
