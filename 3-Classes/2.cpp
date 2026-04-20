@@ -36,6 +36,7 @@ class Person{
         Person();
         Person(string name_, int age_);
         ~Person();
+        Person(const Person& other);
         virtual void displayInfo(){
             cout << "Name: " << name << endl;
             cout << "Age: " << age << endl;
@@ -45,7 +46,7 @@ class Person{
         void setName(string n);
         void setAge(int a);
         friend void comparePeople(Person p1, Person p2);
-        const void printconstthing();
+        Person& setNameAndReturnThis(string name);
 };
 
 // ============================================================================
@@ -189,6 +190,12 @@ class Manager : public Employee {
         void setDepartment(string dep){
             department = dep;
         }
+        void displayInfo(){
+            cout << "Name: " << getName() << endl;
+            cout << "Age: " << getAge() << endl;
+            cout << "ID: " << getEmployeeID() << endl;
+            cout << "Department: " << getDepartment() << endl;
+        }
 };
 
 // ============================================================================
@@ -293,6 +300,10 @@ class Worker{
 //   - Example: Person& setName(string n) { this->name = n; return *this; }
 //   - This allows method chaining: person.setName("Bob").displayInfo()
 
+Person& Person::setNameAndReturnThis(string n){
+    this->name = n;
+    return *this;
+}
 
 // ============================================================================
 // TASK 15: DEEP COPY AND COPY CONSTRUCTOR
@@ -303,6 +314,11 @@ class Worker{
 //   - Print a message when copy constructor is called
 //   - Test: Person p1("Alice", 30); Person p2 = p1; // Calls copy constructor
 
+Person::Person(const Person& other){
+    this->name = other.name;
+    this->age = other.age;
+    cout << "copied" << endl;
+};
 
 // ============================================================================
 // TESTING SECTION - WRITE YOUR OWN TESTS IN MAIN()
@@ -323,6 +339,7 @@ int main(){
     // Test Task 2: Test constructors and destructors
     // TODO: Create objects using different constructors
     // TODO: Create an object in a scope block {} to see destructor call
+    begintaskblock(2);
 
     Person person2_1;
     person2_1.displayInfo();
@@ -332,10 +349,11 @@ int main(){
 
     destructtest();
 
-    cout << endl << endl;
+    endtaskblock();
     // Test Task 3: Test encapsulation with getters/setters
     // TODO: Test valid age setting
     // TODO: Test invalid age setting (should reject or show error)
+    begintaskblock(3);
     Person person3_1("name1", 10);
     person3_1.displayInfo();
     cout << person3_1.getAge() << endl;
@@ -344,43 +362,50 @@ int main(){
     person3_1.setName("grob");
     person3_1.displayInfo();
     
-    cout << endl << endl;
+    endtaskblock();
     // Test Task 4: Test friend function
     // TODO: Create two Person objects and compare them using comparePeople()
+    begintaskblock(4);
     comparePeople(person2_2, person3_1);
-    
+
+    endtaskblock();
     // Test Task 5: Test inheritance - Employee class
     // TODO: Create an Employee object with all parameters
     // TODO: Call displayInfo() on Employee
+    begintaskblock(5);
     Employee employee5("bob", 20, 1234567);
     employee5.displayInfo();
-    
-    
+
+    endtaskblock();
     // Test Task 6: Test constructor chaining
     // TODO: Verify that Person constructor was called through Employee
+    begintaskblock(6);
     Employee employee6("aaaaa", 1, 123);
-    
-    
+
+    endtaskblock();
     // Test Task 7: Test Manager class (multiple levels of inheritance)
     // TODO: Create a Manager object
     // TODO: Call displayInfo() to see all information
+    begintaskblock(7);
     Manager manager7("name", 50, 1234, "business or something idk");
     manager7.displayInfo();
-    
-    
+
+    endtaskblock();
     // Test Task 8: Test multiple inheritance with TrainedEmployee
     // TODO: Create a TrainedEmployee object
     // TODO: Call performRole() to test both functionalities
     // TODO: Be careful about accessing displayInfo() - which one gets called?
     //       (Hint: You might need to use Employee::displayInfo() or Trainer::displayInfo())
+    begintaskblock(8);
     TrainedEmployee trainedemployee8("name", 30, 12345, "businebi");
     trainedemployee8.performRole();
-    
-    
+
+    endtaskblock();
     // Test Task 9: Test polymorphism with virtual functions
     // TODO: Create a base class pointer: Person* ptr;
     // TODO: Make it point to different derived objects (Employee, Manager, etc.)
     // TODO: Call displayInfo() through the pointer - observe which version is called
+    begintaskblock(9);
     Employee employee9("bob", 20, 1234567);
     Manager manager9("name", 50, 1234, "business or something idk");
     Person* ptr9;
@@ -388,30 +413,35 @@ int main(){
     ptr9->displayInfo();
     ptr9 = &manager9;
     ptr9->displayInfo();
-    
-    
+
+    endtaskblock();
     // Test Task 10: Test abstract class (Worker)
     // TODO: Try to create a Worker object - should NOT compile!
     // TODO: Create an object of a concrete derived class instead
+    begintaskblock(10);
 
     // Worker w; <- fails
-    
+
+    endtaskblock();
     // Test Task 11: Test pointers and references
     // TODO: Create a Person object
     // TODO: Create a pointer to it and use ->
     // TODO: Create a reference to it and use .
     // TODO: Modify through pointer/reference and see changes reflected
+    begintaskblock(11);
     
     Person person11("name", 30);
     Person* ptr11 = &person11;
     ptr11->displayInfo();
     Person &person11ref = person11;
     person11ref.displayInfo();
-    
+
+    endtaskblock();
     // Test Task 12: Test polymorphic pointers with virtual functions
     // TODO: Create an array/vector of Person pointers
     // TODO: Point them to different derived objects
     // TODO: Call virtual functions in a loop - see polymorphism in action!
+    begintaskblock(12);
     Person person12_1("1", 1), person12_2("2", 2), person12_3("3", 3);
     Person* people12[3];
     people12[0] = &person12_1;
@@ -420,27 +450,38 @@ int main(){
     for (int i = 0; i < 3; i++){
         people12[i]->displayInfo();
     }
-    
-    
+
+    endtaskblock();
     // Test Task 13: Test const correctness
     // TODO: Create a const Person object
     // TODO: Try calling getters on it (should work)
     // TODO: Try calling non-const methods on it (should fail to compile)
+    begintaskblock(13);
 
     const Person person13("nameaaa", 13);
     cout << person13.getAge() << endl;
-    
-    
+    // person13.displayInfo(); doesnt compile
+
+    endtaskblock();
     // Test Task 14: Test this pointer and method chaining
     // TODO: If you implemented it, test method chaining
     // TODO: Example: person.setName("NewName").displayInfo();
-    
-    
+    begintaskblock(14);
+    Person person14("g", 16);
+    person14.setNameAndReturnThis("newawesomename").displayInfo();
+
+    endtaskblock();
     // Test Task 15: Test copy constructor
     // TODO: Create a Person object p1
     // TODO: Create p2 = p1 to trigger copy constructor
     // TODO: Modify p1 and verify p2 is independent (deep copy works)
-    
-    
+    begintaskblock(15);
+    Person p15("Alice", 30);
+    Person p15_1 = p15;
+    p15.setName("not alice");
+    p15.displayInfo();
+    p15_1.displayInfo();
+
+    endtaskblock();
     return 0;
 }
