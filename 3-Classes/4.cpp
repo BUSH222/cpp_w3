@@ -63,6 +63,22 @@ void print<string>(string value){
 //   - Has a getter method: T getValue()
 //   - Has a setter method: setValue(T value)
 
+template<typename T>
+class Box{
+    private:
+        T member;
+    public:
+        Box(T mem){
+            member = mem;
+        }
+        T getValue(){
+            return member;
+        }
+        void setValue(T value){
+            member = value;
+        }
+};
+
 
 // ============================================================================
 // TASK 5: CLASS TEMPLATE WITH MULTIPLE TYPE PARAMETERS
@@ -74,6 +90,22 @@ void print<string>(string value){
 //   - Has setters: setFirst(T) and setSecond(U)
 //   - Demonstrates template<typename T, typename U> class Pair
 
+template<typename T, typename U>
+class Pair{
+    private:
+        T elem1;
+        U elem2;
+    public:
+        Pair(T first, U second){
+            elem1 = first;
+            elem2 = second;
+        }
+        T getFirst(){ return elem1; }
+        U getSecond(){ return elem2; }
+        void setFirst(T first){ elem1 = first;}
+        void setSecond(U second){ elem2 = second;}
+};
+
 
 // ============================================================================
 // TASK 6: CLASS TEMPLATE WITH MEMBER FUNCTION DEFINITIONS
@@ -84,6 +116,27 @@ void print<string>(string value){
 //   - Define setValue() OUTSIDE: template<typename T> void Box<T>::setValue(T val) { ... }
 //   - Shows how to separate declaration from definition in templates
 
+template<typename T>
+class Box6{
+    private:
+        T item;
+    public:
+        Box6(T val);
+        T getValue();
+        void setValue(T val);
+};
+
+
+template<typename T>
+Box6<T>::Box6(T val){ item = val;}
+
+template<typename T>
+T Box6<T>::getValue(){ return item;}
+
+template<typename T>
+void Box6<T>::setValue(T val){item = val;}
+
+
 
 // ============================================================================
 // TASK 7: CLASS TEMPLATE SPECIALIZATION
@@ -93,6 +146,28 @@ void print<string>(string value){
 //   - This specialized version should store the string in UPPERCASE
 //   - Override the setter to convert input to uppercase
 //   - This demonstrates full template specialization
+
+template<>
+class Box6<string>{
+    private:
+        string item;
+    public:
+        Box6(string val){
+            for (char &x: val){
+                x = toupper(x);
+            }
+            item = val;
+        }
+        void setValue(string val){
+            for (char& x: val){
+                x = toupper(x);
+            }
+            item = val;
+        }
+        string getValue(){
+            return item;
+        }
+};
 
 
 // ============================================================================
@@ -211,22 +286,42 @@ int main(){
     // TODO: Call getValue() on both
     // TODO: Call setValue() and verify changes
 
+    Box<int> b4_0(100);
+    Box<string> b4_1("hello");
+    print(b4_0.getValue());
+    print(b4_1.getValue());
+    b4_0.setValue(100000);
+    b4_1.setValue("AAAAA");
+    print(b4_0.getValue());
+    print(b4_1.getValue());
+
 
     // Test Task 5: Test class template with multiple types
     // TODO: Create Pair<int, string> with (42, "answer")
     // TODO: Create Pair<double, double> with (3.14, 2.71)
     // TODO: Call getters on both
+    
+    Pair<int, string> pair5(42, "answer");
+    Pair<double, double> pair5_2 (3.14, 2.71);
 
 
     // Test Task 6: Test class template with external definitions
     // TODO: Verify that Box works with external member definitions
     // TODO: This should work if you defined Box members outside the class
+    Box6<int> b6(123);
+    print(b6.getValue());
+    b6.setValue(456);
+    print(b6.getValue());
 
 
     // Test Task 7: Test class template specialization
     // TODO: Create Box<string> and set it to "hello world"
     // TODO: Call getValue() - it should be uppercase "HELLO WORLD"
     // TODO: Demonstrates specialization behavior
+    Box6<string> b7(string("hiasddasdsfakjdsfhadsk"));
+    print(b7.getValue());
+    b7.setValue(string("aaaaa"));
+    print(b7.getValue());
 
 
     // Test Task 8: Test non-type template parameters
