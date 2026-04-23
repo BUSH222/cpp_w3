@@ -179,6 +179,18 @@ class Box6<string>{
 //   - Has a method to set element: setElement(int index, T value)
 //   - Has a method to get element: T getElement(int index) const
 
+template<typename T, int SIZE>
+class Array{
+    private:
+        T arr[SIZE];
+    public:
+        void setElement(int index, T value){
+            arr[index] = value;
+        }
+        T getElement(int index){
+            return arr[index];
+        }
+};
 
 // ============================================================================
 // TASK 9: TEMPLATE PARAMETER DEFAULTS
@@ -189,6 +201,21 @@ class Box6<string>{
 //   - This means if you use Container<double>, U defaults to int
 //   - Has members of both types
 
+template<typename T, typename U = int>
+class Container{
+    private:
+        T item1;
+        U item2;
+    public:
+        Container(T first, U second){
+            item1 = first;
+            item2 = second;
+        }
+        T getItem1(){ return item1; }
+        U getItem2(){ return item2; }
+        void setItem1(T first){ item1 = first;}
+        void setItem2(U second){ item2 = second;}
+};
 
 // ============================================================================
 // TASK 10: FUNCTION TEMPLATE WITH CLASS TEMPLATE
@@ -197,6 +224,11 @@ class Box6<string>{
 //   - Takes a Box<T> object as parameter (where Box is from Task 4)
 //   - Prints its contents
 //   - Works with ANY type T: printBox(Box<int>), printBox(Box<string>), etc.
+
+template<typename T>
+void printBox(Box<T> box){
+    cout << box.getValue() << endl;
+}
 
 
 // ============================================================================
@@ -208,6 +240,21 @@ class Box6<string>{
 //   - template<> void process<double>(double value) - specialized for double
 //   - Each should print different behavior
 
+template<typename T>
+void process(T value){
+    cout << "unknown type" << endl;
+}
+
+template<>
+void process<int>(int value){
+    cout << "int" << endl;
+}
+
+template<>
+void process<double>(double value){
+    cout << "double" << endl;
+}
+
 
 // ============================================================================
 // TASK 12: UNDERSTANDING TEMPLATE INSTANTIATION
@@ -217,6 +264,13 @@ class Box6<string>{
 //   - The compiler creates SEPARATE CODE for each type used
 //   - Example: add<int>, add<double> are different functions at runtime
 //   - You'll see this when you call add(5, 3) and add(5.5, 3.3)
+
+template<typename T>
+T add (T a, T b){
+    cout << "Adding: " << typeid(T).name() << endl;
+    return a+b;
+}
+
 
 
 // ============================================================================
@@ -228,6 +282,19 @@ class Box6<string>{
 //   - Create derived class template: template<typename T> class Dog : public Animal<T> { ... }
 //   - Override speak() in Dog to print "Woof!"
 //   - This shows templates can be inherited just like regular classes
+template<typename T>
+class Animal{
+    public:
+        virtual void speak() = 0;
+};
+
+template<typename T>
+class Dog: public Animal<T>{
+    public:
+        void speak(){
+            cout << "woof" << endl;
+        };
+};
 
 
 // ============================================================================
@@ -238,6 +305,11 @@ class Box6<string>{
 //   - Returns true if they're equal
 //   - Works with any type that supports operator==
 
+template<typename T>
+bool isEqual(T a, T b){
+    return a == b;
+}
+
 
 // ============================================================================
 // TASK 15: TEMPLATE WITH CONST AND REFERENCES
@@ -247,6 +319,27 @@ class Box6<string>{
 //   - Modifies the value (increment if number, add '!' if string, etc.)
 //   - Takes a const parameter: template<typename T> void print_const(const T& value)
 //   - Shows how const and references work with templates
+
+template<typename T>
+void modify(T &value){
+    cout << "dunno" << endl;
+}
+
+template<>
+void modify<string>(string &value){
+    value += "!";
+}
+
+template<>
+void modify<int>(int &value){
+    value += 100;
+}
+
+template<typename T>
+void print_const(const T& value){
+    cout << value;
+}
+
 
 
 // ============================================================================
@@ -329,11 +422,18 @@ int main(){
     // TODO: Set some elements: setElement(0, 10), setElement(1, 20)
     // TODO: Get elements back: getElement(0)
     // TODO: Try creating Array<int, 10> with different size
-
+    Array<int, 5> ar8;
+    ar8.setElement(0, 10);
+    ar8.setElement(1, 20);
+    print(ar8.getElement(0));
+    print(ar8.getElement(1));
 
     // Test Task 9: Test template parameter defaults
     // TODO: Create Container<string> - U should default to int
     // TODO: Verify both members work (T and default U)
+    Container<string> c9(string("hello"), 42);
+    print(c9.getItem1());
+    print(c9.getItem2());
 
 
     // Test Task 10: Test function template with class template
@@ -341,37 +441,55 @@ int main(){
     // TODO: Call printBox(b1) to print it
     // TODO: Create Box<double> b2(3.14)
     // TODO: Call printBox(b2)
+    Box<int> b10_1(50);
+    printBox(b10_1);
+    Box<double> b10_2(3.14);
+    printBox(b10_2);
 
 
     // Test Task 11: Test template function overloading
     // TODO: Call process(42) - should call int specialization
     // TODO: Call process(3.14) - should call double specialization
     // TODO: Call process(string("hello")) - should call generic version
+    process(42);
+    process(3.14);
+    process(string("hello"));
 
 
     // Test Task 12: Test template instantiation
     // TODO: Call a template function with int: add(5, 3)
     // TODO: Call the same template function with double: add(5.5, 2.5)
     // TODO: Understand that TWO different functions exist at runtime
+    add(5, 3);
+    add(5.5, 2.5);
 
 
     // Test Task 13: Test template inheritance
     // TODO: Create Dog<int> (or use any type)
     // TODO: Create pointer to Animal<int> pointing to Dog
     // TODO: Call virtual speak() - should print "Woof!"
+    Dog<int> dog;
+    Animal<int>* animal = &dog;
+    animal->speak();
 
 
     // Test Task 14: Test comparing template types
     // TODO: isEqual(10, 10) - should return true
     // TODO: isEqual(5, 8) - should return false
     // TODO: isEqual(string("hi"), string("hi")) - should return true
+    cout << isEqual(10, 10) << endl;
+    cout << isEqual(5, 8) << endl;
+    cout << isEqual(string("hi"), string("hi")) << endl;
 
 
     // Test Task 15: Test template with const and references
     // TODO: Create int x = 5
     // TODO: Call modify(x) and check that x changed
     // TODO: Call print_const(x) - should work with const reference
-
-
+    int x = 5;
+    modify(x);
+    cout << x << endl;
+    const int t15 = 292199;
+    print_const(t15);
     return 0;
 }

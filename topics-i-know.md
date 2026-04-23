@@ -26,3 +26,9 @@ section 2: functions
 4) scope (local, global)
 5) recursion
 6) lambda
+
+section 3: classes
+1) classes
+2) inheritance
+3) polymorphism
+4) templates (class/function)
