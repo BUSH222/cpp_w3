@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 using namespace std;
 
 /*
@@ -46,34 +47,42 @@ using namespace std;
 int main(){
     double num1, num2;
     string unparsednums, unparsed1, unparsed2;
-    const char allowed_chars[] = {'1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '.'};
     cout << "Give me two numbers: " << endl;
     bool addto2nd = false;
     try {
         getline(cin, unparsednums);
         for (int i = 0; i < unparsednums.size(); i++){
-            for (char x: allowed_chars){
-                if (unparsednums[i] == ' '){
-                    addto2nd = true;
-                    continue;
-                }
-                if (unparsednums[i] != x){
-                    throw "invalid character in input";
-                }
-                if (!addto2nd){
-                    unparsed1 += unparsednums[i];
-                } else {
-                    unparsed2 += unparsednums[i];
-                }
+            if (unparsednums[i] == ' ' || unparsednums[i] == '\n'){
+                addto2nd = true;
+                continue;
             }
+
+            if (!(isdigit(unparsednums[i]) || unparsednums[i] == '.'))
+                throw 0;
+
+            if (!addto2nd){
+                unparsed1 += unparsednums[i];
+            } else {
+                unparsed2 += unparsednums[i];
+            }
+        }
+        if (!addto2nd) throw 2;
         
         num1 = stod(unparsed1);
         num2 = stod(unparsed2);
+        if (num2 == 0) throw 1;
         cout << endl;
-        cout << num2/num1 << endl;
+        cout << num1/num2 << endl;
+    } catch (int err) {
+        string errstr;
+        switch (err){
+            case 0: errstr = "invalid character in input"; break;
+            case 1: errstr = "division by zero"; break;
+            case 2: errstr = "one number specified"; break;
+            default: errstr = "UNKNWN";
+        }
+        cout << "ERROR: " << errstr << endl;
+    } catch (...){
+        cout << "ERROR: UNKNWN" << endl;
     }
-    } catch (...) {
-        cout << "ERROR!" << endl;
-    }
-    
 }
